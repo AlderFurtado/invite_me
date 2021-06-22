@@ -9,27 +9,33 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Contact } from "../../interfaces/contact";
+import { useNavigation } from "@react-navigation/native";
 
 const ListContact = (): JSX.Element => {
   const [listContact, setListContact] = useState<Contact[]>([]);
   const [listContactCache, setListContactCache] = useState<Contact[]>([]);
   const [findName, setFindName] = useState<string>("");
 
+  const navigation = useNavigation();
   useEffect(() => {
     (async () => {
       const { status } = await Contacts.requestPermissionsAsync();
       if (status === "granted") {
-        const { data } = await Contacts.getContactsAsync();
-
-        if (data.length > 0) {
-          const contacts = getOnlyValidateContact(data);
-
-          setListContact(contacts as Contact[]);
-          setListContactCache(contacts as Contact[]);
-        }
+        getContactsByDevice();
       }
     })();
   }, []);
+
+  const getContactsByDevice = async () => {
+    const { data } = await Contacts.getContactsAsync();
+
+    if (data.length > 0) {
+      const contacts = getOnlyValidateContact(data);
+
+      setListContact(contacts as Contact[]);
+      setListContactCache(contacts as Contact[]);
+    }
+  };
 
   const getOnlyValidateContact = (contact: any[]) => {
     return contact
@@ -114,6 +120,20 @@ const ListContact = (): JSX.Element => {
           );
         }}
       />
+      <TouchableOpacity
+        onPress={() => navigation.navigate("FormInfo")}
+        style={{
+          borderRadius: 20,
+          backgroundColor: "blue",
+          paddingHorizontal: 6,
+          paddingVertical: 16,
+          position: "absolute",
+          alignSelf: "center",
+          bottom: 0,
+        }}
+      >
+        <Text>Fechar lista de convidados</Text>
+      </TouchableOpacity>
     </>
   );
 };

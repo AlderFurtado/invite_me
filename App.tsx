@@ -1,39 +1,48 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Platform,
-  StatusBar,
-} from "react-native";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import GuestListScreen from "./screens/GuestListScreen";
+import LoginScreen from "./screens/LoginScreen";
+import SelectTypeScreen from "./screens/SelectTypeScreen";
+import FormInfoParty from "./screens/FormInfoParty";
+
+import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import ListContact from "./components/ListContact";
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text>Lista de contatos</Text>
-        <Ionicons name="md-filter" size={32} color="black" />
-      </View>
-      <ListContact />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SelectType"
+          component={SelectTypeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={GuestListScreen}
+          options={{
+            headerRight: () => (
+              <TouchableOpacity onPress={() => alert("This is a button!")}>
+                <Ionicons name="help" size={32} color="black" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="FormInfo"
+          component={FormInfoParty}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-
-  header: {
-    height: 30,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-});
